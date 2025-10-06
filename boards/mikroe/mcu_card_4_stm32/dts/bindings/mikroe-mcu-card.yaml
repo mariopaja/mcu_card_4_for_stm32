@@ -1,0 +1,9 @@
+# Copyright (C) 2025 Mario Paja
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+    GPIO pins exposed on Mikroe MCU Card Connectors.
+
+compatible: "mikroe-mcu-card"
+
+include: [gpio-nexus.yaml, base.yaml]

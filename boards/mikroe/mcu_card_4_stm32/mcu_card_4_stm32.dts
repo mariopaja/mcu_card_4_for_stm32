@@ -1,0 +1,245 @@
+/*
+ * Copyright (c) 2025 Mario Paja
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+#include <st/f4/stm32f429Xi.dtsi>
+#include <st/f4/stm32f429nihx-pinctrl.dtsi>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include "uni_clicker.dtsi"
+
+/ {
+	model = "MIKROE MCU CARD 4 for STM32 board";
+	compatible = "mikroe,mcu-card-4-stm32";
+
+	chosen {
+		zephyr,console = &cdc_acm_uart0;
+		zephyr,shell-uart = &cdc_acm_uart0;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zephyr,ccm = &ccm0;
+	};
+
+};
+
+&clk_lsi {
+	status = "okay";
+};
+
+&clk_hse {
+	clock-frequency = <DT_FREQ_M(25)>;
+	status = "okay";
+};
+
+&pll {
+	div-m = <25>;
+	mul-n = <336>;
+	div-p = <2>;
+	div-q = <7>;
+	clocks = <&clk_hse>;
+	status = "okay";
+};
+
+&rcc {
+	clocks = <&pll>;
+	clock-frequency = <DT_FREQ_M(168)>; /* highest value to get a precise USB clock */
+	ahb-prescaler = <1>;
+	apb1-prescaler = <4>;
+	apb2-prescaler = <2>;
+};
+
+&uart7 {
+	pinctrl-0 = <&uart7_tx_pf7 &uart7_rx_pf6>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+};
+
+&mac {
+	pinctrl-0 = <&eth_rxd0_pc4
+		     &eth_rxd1_pc5
+			 &eth_ref_clk_pa1
+		     &eth_crs_dv_pa7
+		     &eth_tx_en_pb11
+		     &eth_txd0_pb12
+		     &eth_txd1_pb13>;
+	pinctrl-names = "default";
+	phy-connection-type = "rmii";
+	phy-handle = <&eth_phy>;
+	status = "okay";
+};
+
+&mdio {
+	pinctrl-0 = <&eth_mdio_pa2 &eth_mdc_pc1>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	eth_phy: ethernet-phy@0 {
+		compatible = "ethernet-phy";
+		reg = <0x00>;
+	};
+};
+
+&can1 {
+	pinctrl-0 = <&can1_rx_pb8 &can1_tx_pb9>;
+	pinctrl-names = "default";
+};
+
+zephyr_udc0: &usbotg_fs {
+	pinctrl-0 = <&usb_otg_fs_dm_pa11 &usb_otg_fs_dp_pa12>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	cdc_acm_uart0: cdc_acm_uart0 {
+		compatible = "zephyr,cdc-acm-uart";
+	};
+};
+
+&rtc {
+	clocks = <&rcc STM32_CLOCK(APB1, 28)>,
+		 <&rcc STM32_SRC_LSI RTC_SEL(2)>;
+	status = "okay";
+};
+
+&iwdg {
+	status = "okay";
+};
+
+&rng {
+	status = "okay";
+};
+
+&dma2 {
+	status = "okay";
+};
+
+&mco1 {
+	clocks = <&rcc STM32_SRC_HSE MCO1_SEL(2)>;
+	prescaler = <MCO1_PRE(MCO_PRE_DIV_1)>;
+	pinctrl-0 = <&rcc_mco_1_pa8>;
+	pinctrl-names = "default";
+
+	status = "okay";
+};
+
+&flash0 {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		/* 32KB for bootloader */
+		boot_partition: partition@0 {
+			label = "mcuboot";
+			reg = <0x00000000 DT_SIZE_K(32)>;
+			read-only;
+		};
+
+		/*
+		 * nvs subsystem requires 2 sectors with a max total of 32K
+		 * On F4 series, the only option is to use the following
+		 * partition, which is compatible with mcuboot usage.
+		 * Keep it commented in order it is not used by CI.
+		 *
+		 * storage_partition: partition@8000 {
+		 *	label = "storage";
+		 *	reg = <0x0008000 DT_SIZE_K(32)>;
+		 * };
+		 */
+
+		/* application image slot: 256KB */
+		slot0_partition: partition@20000 {
+			label = "image-0";
+			reg = <0x00020000 DT_SIZE_K(256)>;
+		};
+
+		/* backup slot: 256KB */
+		slot1_partition: partition@60000 {
+			label = "image-1";
+			reg = <0x00060000 DT_SIZE_K(256)>;
+		};
+
+		/* swap slot: 128KB */
+		scratch_partition: partition@a0000 {
+			label = "image-scratch";
+			reg = <0x000a0000 DT_SIZE_K(128)>;
+		};
+	};
+};
+
+/* Mikrobus 1 */
+mikrobus1_spi: &spi6 {
+	pinctrl-0 = <&spi6_sck_pg13 &spi6_miso_pg12 &spi6_mosi_pg14>;
+	pinctrl-names = "default";
+	cs-gpios = <&gpiob 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+};
+
+mikrobus1_i2c: &i2c2 {
+	pinctrl-0 = <&i2c2_scl_pf1 &i2c2_sda_pf0>;
+	pinctrl-names = "default";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+mikrobus1_serial: &uart8 {
+	pinctrl-0 = <&uart8_tx_pe1 &uart8_rx_pe0>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+};
+
+/* Mikrobus 2 */
+mikrobus2_spi: &spi2 {
+	pinctrl-0 = <&spi2_sck_pi1 &spi2_miso_pi2 &spi2_mosi_pi3>;
+	pinctrl-names = "default";
+	cs-gpios = <&gpioi 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+};
+
+mikrobus2_i2c: &i2c1 {
+	pinctrl-0 = <&i2c1_scl_pb6 &i2c1_sda_pb7>;
+	pinctrl-names = "default";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+mikrobus2_serial: &usart3 {
+	pinctrl-0 = <&usart3_tx_pc10 &usart3_rx_pc11>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+};
+
+/* Mikrobus 3 */
+mikrobus3_spi: &spi2 {
+	pinctrl-0 = <&spi2_sck_pi1 &spi2_miso_pi2 &spi2_mosi_pi3>;
+	pinctrl-names = "default";
+	cs-gpios = <&gpioh 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+};
+
+mikrobus3_i2c: &i2c1 {
+	pinctrl-0 = <&i2c1_scl_pb6 &i2c1_sda_pb7>;
+	pinctrl-names = "default";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+mikrobus3_serial: &usart6 {
+	pinctrl-0 = <&usart6_tx_pc6 &usart6_rx_pc7>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+};
+
+/* Mikrobus 4 */
+mikrobus4_spi: &spi4 {
+	pinctrl-0 = <&spi4_sck_pe12 &spi4_miso_pe13 &spi4_mosi_pe14>;
+	pinctrl-names = "default";
+	cs-gpios = <&gpioe 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+};
+
+mikrobus4_i2c: &i2c2 {
+	pinctrl-0 = <&i2c2_scl_ph4 &i2c2_sda_ph5>;
+	pinctrl-names = "default";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+mikrobus4_serial: &usart3 {
+	pinctrl-0 = <&usart3_tx_pd8 &usart3_rx_pd9>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+};
