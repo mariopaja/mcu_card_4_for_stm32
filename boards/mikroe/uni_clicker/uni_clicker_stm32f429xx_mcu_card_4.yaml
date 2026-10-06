@@ -1,4 +1,4 @@
-identifier: uni_clicker/stm32f429xx
+identifier: uni_clicker/stm32f429xx/mcu_card_4
 name: MIKROE UNI Clicker with MCU CARD 4 for STM32 (STM32F429NI)
 type: mcu
 arch: arm

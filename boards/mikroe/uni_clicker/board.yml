@@ -4,3 +4,5 @@ board:
   vendor: mikroe
   socs:
     - name: stm32f429xx
+      variants:
+        - name: mcu_card_4
