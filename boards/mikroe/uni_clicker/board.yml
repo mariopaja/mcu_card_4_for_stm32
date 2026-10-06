@@ -1,6 +1,6 @@
 board:
-  name: mcu_card_4
-  full_name: MIKROE MCU Card 4
+  name: uni_clicker
+  full_name: MIKROE UNI Clicker
   vendor: mikroe
   socs:
     - name: stm32f429xx

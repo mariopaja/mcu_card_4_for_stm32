@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
-if(CONFIG_BOARD_MCU_CARD_4_STM32F429XX)
+if(CONFIG_BOARD_UNI_CLICKER_STM32F429XX)
   board_runner_args(jlink "--device=STM32F429NI" "--speed=4000")
 endif()
 
