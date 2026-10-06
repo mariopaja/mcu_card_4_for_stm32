@@ -1,5 +1,5 @@
-identifier: mcu_card_4_stm32
-name: MIKROE MCU Card 4 for STM32
+identifier: uni_clicker/stm32f429xx/mcu_card_4
+name: MIKROE UNI Clicker with MCU CARD 4 for STM32 (STM32F429NI)
 type: mcu
 arch: arm
 toolchain:
@@ -8,9 +8,6 @@ toolchain:
 ram: 192
 flash: 2048
 supported:
-  - arduino_gpio
-  - arduino_i2c
-  - arduino_spi
   - netif:eth
   - i2c
   - spi
@@ -24,4 +21,4 @@ supported:
   - dma
   - rtc
   - usbd
-vendor: st
+vendor: mikroe

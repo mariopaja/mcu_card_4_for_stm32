@@ -1,7 +1,7 @@
 # Copyright (c) 2025 Mario Paja
 # SPDX-License-Identifier: Apache-2.0
 
-if BOARD_MCU_CARD_4_STM32
+if BOARD_UNI_CLICKER
 
 if NETWORKING
 
@@ -10,4 +10,4 @@ config NET_L2_ETHERNET
 
 endif # NETWORKING
 
-endif # BOARD_MCU_CARD_4_STM32
+endif # BOARD_UNI_CLICKER
