@@ -2,9 +2,11 @@
  * Copyright (c) 2025 Mario Paja
  *
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Generic UNI Clicker carrier description. The MCU-card specific
+ * connector mapping (left_connector / right_connector) must be included
+ * by the board DTS before this file.
  */
-
-#include "mcu_card_connector.dtsi"
 
 / {
     aliases {

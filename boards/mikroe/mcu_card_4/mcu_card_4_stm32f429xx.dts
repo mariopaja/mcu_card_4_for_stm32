@@ -8,11 +8,12 @@
 #include <st/f4/stm32f429Xi.dtsi>
 #include <st/f4/stm32f429nihx-pinctrl.dtsi>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
+#include "mcu_card_4_stm32f429xx_connector.dtsi"
 #include "uni_clicker.dtsi"
 
 / {
 	model = "MIKROE MCU CARD 4 for STM32 board";
-	compatible = "mikroe,mcu-card-4-stm32";
+	compatible = "mikroe,mcu-card-4-stm32f429xx";
 
 	chosen {
 		zephyr,console = &cdc_acm_uart0;

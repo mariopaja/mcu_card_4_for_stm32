@@ -1,0 +1,6 @@
+board:
+  name: mcu_card_4
+  full_name: MIKROE MCU Card 4
+  vendor: mikroe
+  socs:
+    - name: stm32f429xx
