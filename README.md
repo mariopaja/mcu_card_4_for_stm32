@@ -7,10 +7,10 @@ MIKROE UNI Clicker board files are separated in branches matching their respecti
 
 Add this project to your `west.yml` manifest:
 ```yaml
-- name: mcu_card_4_for_stm32
+- name: uni_clicker
   path: modules/uni_clicker
   revision: v4.2.0
-  url: https://github.com/mariopaja/mcu_card_4_for_stm32.git
+  url: https://github.com/mariopaja/uni_clicker.git
 ```
 
 So your projects should look something like this:
@@ -23,10 +23,10 @@ manifest:
       path: zephyr
       west-commands: scripts/west-commands.yml
       import: true
-    - name: mcu_card_4_for_stm32
+    - name: uni_clicker
       path: modules/uni_clicker
       revision: v4.2.0
-      url: https://github.com/mariopaja/mcu_card_4_for_stm32.git
+      url: https://github.com/mariopaja/uni_clicker.git
 ```
 
 This will import the board and allow you to use it in your code.
